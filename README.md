@@ -1,0 +1,3 @@
+What I have done so far:
+* Created tic-tac-toe that you can run in the command line interface (CLI)
+* Implemented an algorithm where the robot's choice would be random using bash shell scripting
