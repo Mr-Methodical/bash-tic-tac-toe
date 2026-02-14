@@ -104,7 +104,7 @@ human_move() {
     local move
     read -p "Make a move: " move
     while [[ ! ${move} =~ ^[0-8]$ ]] || [[ ! ${board[${move}]} =~ ^[0-8]$ ]]; do
-        echo"----------------------------"
+        echo "----------------------------"
         echo "not a valid move"
         print_array
         read -p "Make a move: " move
