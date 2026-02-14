@@ -49,6 +49,11 @@ else
     echo "I will go first"
     robo_char='X'
     robot_choose ${robo_char}
-    #Make robot move here, and then they will be on same place
 fi
-#Now it's user choice, we need to make sure their choice is valid
+read -p "Make a move" move
+while [[ ! ${move} =~ ^[0-8]$ ]] || [[ ! ${board[${move}]} =~ ^[0-8]$ ]]; do
+    echo"----------------------------"
+    echo "not a valid move"
+    print_array
+    read -p "Make a move: " move
+done
