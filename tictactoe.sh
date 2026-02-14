@@ -97,14 +97,20 @@ else
     human_char='O'
     robot_choose ${robo_char}
 fi
-read -p "Make a move" move
-while [[ ! ${move} =~ ^[0-8]$ ]] || [[ ! ${board[${move}]} =~ ^[0-8]$ ]]; do
-    echo"----------------------------"
-    echo "not a valid move"
-    print_array
-    read -p "Make a move: " move
-done
+human_move() {
+    read -p "Make a move" move
+    while [[ ! ${move} =~ ^[0-8]$ ]] || [[ ! ${board[${move}]} =~ ^[0-8]$ ]]; do
+        echo"----------------------------"
+        echo "not a valid move"
+        print_array
+        read -p "Make a move: " move
+    done
+}
 while [ ${board_full} -eq 0 ] {
-    board[${move}]=${human_char}
+    board[${human_move}]=${human_char}
+    check_win $human_char
+    if [ $? -eq 0 ]; then
+        echo "human wins"
+    fi
     robot_choose ${robo_char}
     print_array
