@@ -23,6 +23,36 @@ free_space_count() {
     echo ${count}
 }
 
+check_win() {
+    char=${1} #either will be 'O' or 'X'
+    for i in 0 3 6; do
+        if [ ${char} == ${board[$((i))]} ] && \
+           [ ${char} == ${board[$((i+1))]} ] && \
+           [ ${char} == ${board[$((i+2))]} ]; then
+            return 0 #for win
+        fi
+    done
+    for i in 0 1 2; do
+        if [ ${char} == ${board[$((i))]} ] && \
+           [ ${char} == ${board[$((i+3))]} ] && \
+           [ ${char} == ${board[$((i+6))]} ]; then
+            return 0 #for win
+        fi
+    done
+    if [ ${char} == ${board[0]} ] && \
+       [ ${char} == ${board[4]} ] && \
+       [ ${char} == ${board[8]} ]; then
+        return 0 #for win
+    fi
+    
+    if [ ${char} == ${board[2]} ] && \
+       [ ${char} == ${board[4]} ] && \
+       [ ${char} == ${board[6]} ]; then
+        return 0 #for win
+    fi
+    return 1
+}    
+
 robot_choose() {
     local count=$(free_space_count)
     local free_index=$((RANDOM % count))
@@ -37,6 +67,11 @@ robot_choose() {
     done
     board[counter]=$1
     print_array
+    check_win $1
+    if [ $? -eq 0 ]; then
+        echo "computer wins"
+        exit 0
+    fi
 }
 
 echo -n "Tic-Tac-Toe: Enter 1 for you to go to first, anything else to go second: "
@@ -44,10 +79,12 @@ read place
 if [[ ${place} =~ ^[0-9]+$ ]] && [ ${place} -eq 1 ]; then
     echo "You go first"
     robo_char='O'
+    human_char='X'
     print_array
 else
     echo "I will go first"
     robo_char='X'
+    human_char='O'
     robot_choose ${robo_char}
 fi
 read -p "Make a move" move
@@ -57,3 +94,6 @@ while [[ ! ${move} =~ ^[0-8]$ ]] || [[ ! ${board[${move}]} =~ ^[0-8]$ ]]; do
     print_array
     read -p "Make a move: " move
 done
+board[${move}]=${human_char}
+robot_choose ${robo_char}
+print_array
