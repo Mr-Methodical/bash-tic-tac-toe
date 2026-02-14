@@ -74,6 +74,16 @@ robot_choose() {
     fi
 }
 
+board_full() {
+    for i in {0..8}; do
+        if [ ${board[$i]} -eq $i ]; then
+            echo 0 #there is still room left on board
+            return
+        fi
+    done
+    echo 1
+}
+
 echo -n "Tic-Tac-Toe: Enter 1 for you to go to first, anything else to go second: "
 read place
 if [[ ${place} =~ ^[0-9]+$ ]] && [ ${place} -eq 1 ]; then
@@ -94,6 +104,7 @@ while [[ ! ${move} =~ ^[0-8]$ ]] || [[ ! ${board[${move}]} =~ ^[0-8]$ ]]; do
     print_array
     read -p "Make a move: " move
 done
-board[${move}]=${human_char}
-robot_choose ${robo_char}
-print_array
+while [ ${board_full} -eq 0 ] {
+    board[${move}]=${human_char}
+    robot_choose ${robo_char}
+    print_array
