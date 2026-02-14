@@ -90,12 +90,12 @@ board_full() {
 echo -n "Tic-Tac-Toe: Enter 1 for you to go to first, anything else to go second: "
 read place
 if [[ ${place} =~ ^[0-9]+$ ]] && [ ${place} -eq 1 ]; then
-    echo "You go first"
+    echo "You go first (You are X)"
     robo_char='O'
     human_char='X'
     print_array
 else
-    echo "I will go first"
+    echo "I will go first (You are O)"
     robo_char='X'
     human_char='O'
     robot_choose ${robo_char}
@@ -116,9 +116,11 @@ while [ $(board_full) -eq 0 ]; do
     board[$?]=${human_char}
     check_win $human_char
     if [ $? -eq 0 ]; then
-        echo "human wins"
         print_array
+        echo "human wins"
         exit 0
     fi
     robot_choose ${robo_char}
 done
+echo "It's a Tie"
+exit 0
