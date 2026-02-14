@@ -11,6 +11,7 @@ print_array() {
     echo "   |   |   "
     echo " ${board[6]} | ${board[7]} | ${board[8]} "
     echo "   |   |   "
+    echo "______________________________"
 }
 
 free_space_count() {
@@ -106,11 +107,12 @@ human_move() {
         read -p "Make a move: " move
     done
 }
-while [ ${board_full} -eq 0 ] {
-    board[${human_move}]=${human_char}
+while [ $(board_full) -eq 0 ] {
+    board[$(human_move)]=${human_char}
+    print_array
     check_win $human_char
     if [ $? -eq 0 ]; then
         echo "human wins"
     fi
     robot_choose ${robo_char}
-    print_array
+done
