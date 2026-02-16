@@ -27,6 +27,21 @@ bool check_win_char(char board[], char c) {
     return false;
 }
 
+// check_win(board, human, robot) calculates a score for the robot's position
+//   based on if they have won, lost, or are still going/tied
+// requires: board must be a valid array of size 9 [not asserted]
+//           human is 'X' and robot is 'O' or human is 'O' and robot is 'X'
+int check_win(char board[], char human, char robot) {
+    assert((human == 'X' & robot == 'O') || (human == 'O' && robot == 'X'));
+    if (check_win_char(board, human)) {
+        return -10;
+    } else if (check_win_char(board, robot)) {
+        return 10;
+    } else {
+        return 0;
+    }
+}
+
 int main(int argc, char *argv[]){
     // From our bash script we know we will be give a board that
     //   has at least one empty space
