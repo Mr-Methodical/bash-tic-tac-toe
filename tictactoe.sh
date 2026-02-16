@@ -110,7 +110,11 @@ else
     echo "I will go first (You are O)"
     robo_char='X'
     human_char='O'
-    robot_choose ${robo_char}
+    if [ "${mode}" == "0" ]; then
+        robot_choose_smart ${robo_char}
+    else
+        robot_choose ${robo_char}
+    fi
 fi
 human_move() {
     local move
@@ -131,6 +135,9 @@ while [ $(board_full) -eq 0 ]; do
         print_array
         echo "human wins"
         exit 0
+    fi
+    if [ $(board_full) -ne 0 ]; then
+        break
     fi
     if [ "${mode}" == "0" ]; then
         robot_choose_smart ${robo_char}
