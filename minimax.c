@@ -42,6 +42,17 @@ int check_win(char board[], char human, char robot) {
     }
 }
 
+// moves_left(board) returns true if there are moves left; false otherwise
+// requires: board is valid of size 9 [not asserted]
+bool moves_left(char board[]) {
+    for (int i = 0; i < 9; ++i) {
+        if (board[i] != 'X' && board[i] != 'O') {
+            return true;
+        }
+    }
+    return false;
+}
+
 int main(int argc, char *argv[]){
     // From our bash script we know we will be give a board that
     //   has at least one empty space
