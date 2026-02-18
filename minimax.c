@@ -96,6 +96,7 @@ int minimax(bool is_max, int depth, char board[], char human, char robot) {
         return best;
     }
 }
+
 int main(int argc, char *argv[]){
     // From our bash script we know we will be give a board that
     //   has at least one empty space
@@ -106,8 +107,21 @@ int main(int argc, char *argv[]){
     for (int i = 0; i < 9; ++i) {
         board[i] = *argv[i + 1];
     }
-    // simple test:
-    char arr[9] = 
-    
+    int best_move = 0;
+    int max_score = -10;
+    for (int i = 0; i < 9; ++i) {
+        if (board[i] != 'X' && board[i] != 'O') {
+            int temp = board[i];
+            board[i] = robo_char;
+            int val = minimax(true, 1, board, human_char, robo_char);
+            if (max_score < val) {
+                max_score = val;
+                best_move = i;
+            }
+            board[i] = temp;
+        }
+    }
+    printf("%d", best_move);
+    return 0;
 }
 
