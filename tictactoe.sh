@@ -54,6 +54,17 @@ check_win() {
     return 1
 }    
 
+robot_choose_smart() {
+    local move=$(./minimax "${board[@]}" "$1")
+    board[${move}]=$1
+    print_array
+    check_win $1
+    if [ $? -eq 0 ]; then
+        echo "computer wins"
+        exit 0
+    fi
+}
+
 robot_choose() {
     local free_spaces_left=$(free_space_count)
     local free_index=$((RANDOM % free_spaces_left))
@@ -87,6 +98,7 @@ board_full() {
     echo 1
 }
 
+read -p "Enter 0 for Hard mode (minimax), any other key easy (random mode): " mode
 echo -n "Tic-Tac-Toe: Enter 1 for you to go to first, anything else to go second: "
 read place
 if [[ ${place} =~ ^[0-9]+$ ]] && [ ${place} -eq 1 ]; then
@@ -98,7 +110,11 @@ else
     echo "I will go first (You are O)"
     robo_char='X'
     human_char='O'
-    robot_choose ${robo_char}
+    if [ "${mode}" == "0" ]; then
+        robot_choose_smart ${robo_char}
+    else
+        robot_choose ${robo_char}
+    fi
 fi
 human_move() {
     local move
@@ -120,7 +136,14 @@ while [ $(board_full) -eq 0 ]; do
         echo "human wins"
         exit 0
     fi
-    robot_choose ${robo_char}
+    if [ $(board_full) -ne 0 ]; then
+        break
+    fi
+    if [ "${mode}" == "0" ]; then
+        robot_choose_smart ${robo_char}
+    else
+        robot_choose ${robo_char}
+    fi
 done
 echo "It's a Tie"
 exit 0
