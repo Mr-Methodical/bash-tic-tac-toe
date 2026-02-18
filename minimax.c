@@ -57,10 +57,10 @@ int minimax(bool is_max, int depth, char board[], char human, char robot) {
     int score = check_win(board, human, robot);
     // base case:
     if (score == 10) {
-        return 10;
+        return 10 - depth;
     } 
     if (score == -10) {
-        return -10;
+        return -10 + depth;
     }
     if (!moves_left(board)) {
         return 0;
@@ -73,8 +73,8 @@ int minimax(bool is_max, int depth, char board[], char human, char robot) {
                 int temp = board[i];
                 board[i] = robot; // robot is the maximizer
                 int val = minimax(!is_max, depth + 1, board, human, robot);
-                if (best < val - depth) {
-                    best = val - depth; // the farther depth, the worse
+                if (best < val) {
+                    best = val; // the farther depth, the worse
                 }
                 board[i] = temp; // reset it (since we are on same board)
             }
@@ -87,8 +87,8 @@ int minimax(bool is_max, int depth, char board[], char human, char robot) {
                 int temp = board[i];
                 board[i] = human; // human is the minimizer
                 int val = minimax(!is_max, depth + 1, board, human, robot);
-                if (best < val + depth) {
-                    best = val + depth; // the farther depth, the worse
+                if (best > val) {
+                    best = val ; // the farther depth, the worse
                 }
                 board[i] = temp; // reset it (since we are on same board)
             }
