@@ -66,28 +66,34 @@ int minimax(bool is_max, int depth, char board[], char human, char robot) {
         return 0;
     }
     // recursive logic:
-    for (int i = 0; i < 9; ++i) {
-        if (board[i] != 'O' && board[i] != 'X') {
-            if (is_max) {
+    if (is_max) {
+        int best = -10;
+        for (int i = 0; i < 9; ++i) {
+            if (board[i] != 'O' && board[i] != 'X') {
                 int temp = board[i];
                 board[i] = robot; // robot is the maximizer
-                int best = -10; // The worst score
                 int val = minimax(!is_max, depth + 1, board, human, robot);
                 if (best < val - depth) {
                     best = val - depth; // the farther depth, the worse
                 }
-                return best;
-            } else { // human's turn so we trying to minimize
-                int temp = board[i];
-                board[i] = human;
-                int best = 10;
-                int val = minimax(!is_max, depth + 1, board, human, robot);
-                if (best > val + depth) {
-                    best = val + depth;
-                }
-                return best;
+                board[i] = temp; // reset it (since we are on same board)
             }
         }
+        return best;
+    } else { // human's turn which is the minimizer
+        int best = 10;
+        for (int i = 0; i < 9; ++i) {
+            if (board[i] != 'O' && board[i] != 'X') {
+                int temp = board[i];
+                board[i] = human; // human is the minimizer
+                int val = minimax(!is_max, depth + 1, board, human, robot);
+                if (best < val + depth) {
+                    best = val + depth; // the farther depth, the worse
+                }
+                board[i] = temp; // reset it (since we are on same board)
+            }
+        }
+        return best;
     }
 }
 int main(int argc, char *argv[]){
