@@ -5,6 +5,7 @@
 ## Task still to do:
 * Implement minimax
 * Use alpha beta pruning to get the time complexity down from O(b^d) to O(b^d/2) in the best case
-* Compare the number of moves to see the average difference the new algorithm made 
+* Compare the number of moves to see the average difference the new algorithm made (I could write a bash shell script to test the time difference between the two; I will just need to create a file for each then) 
+* I could actually put them both against the random version and test over a bunch of trials which one is faster (maybe 1000 games for each)
 * Use RL and have the robot play either itself or minimax to learn and create a graph of the learning to show the progress
 
