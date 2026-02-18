@@ -113,7 +113,7 @@ int main(int argc, char *argv[]){
         if (board[i] != 'X' && board[i] != 'O') {
             int temp = board[i];
             board[i] = robo_char;
-            int val = minimax(true, 1, board, human_char, robo_char);
+            int val = minimax(false, 1, board, human_char, robo_char);
             if (max_score < val) {
                 max_score = val;
                 best_move = i;
