@@ -25,6 +25,10 @@ free_space_count() {
     echo ${count}
 }
 
+reset_board() {
+    board=(0 1 2 3 4 5 6 7 8 9)
+}
+
 check_win() {
     char=${1} #either will be 'O' or 'X'
     for i in 0 3 6; do
@@ -64,13 +68,14 @@ robot_choose_smart() {
     fi
     rm error.log
     board[${move}]=$1
-    check_win $1
+    check_win "$1"
     if [ $? -eq 0 ]; then #case the algo has won
         if [ "$PROG1" == "$1" ]; then
             ((program1_wins++))
         else
             ((program2_wins++))
         fi
+        return 0 #the robot won
     fi
 }
 
@@ -89,12 +94,7 @@ robot_choose() {
         fi
         # not free square so we don't do anything, move onto next index
     done
-    print_array
-    check_win $1
-    if [ $? -eq 0 ]; then
-        echo "computer wins"
-        exit 0
-    fi
+    #the random_choose can never win against a perfect algo, so no need to check
 }
 
 board_full() {
@@ -127,5 +127,8 @@ while [ $(board_full) -eq 0 ]; do
         robot_choose ${robo_char}
     fi
 done
-echo "It's a Tie"
+echo "$1 visited $program1_nodes_visited nodes and it won"\ 
+"$program1_wins games and tied $(($NUM_GAMES - $program1_wins))" 
+echo "$2 visited $program2_nodes_visited nodes and it won"\
+"$program2_wins games and tied $(($NUM_GAMES - $program2_wins))" 
 exit 0
