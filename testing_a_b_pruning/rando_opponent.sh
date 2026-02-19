@@ -1,19 +1,20 @@
 #!/bin/bash
-#./tictactoe.sh
-board=(0 1 2 3 4 5 6 7 8)
-print_array() {
-    echo "   |   |   "
-    echo " ${board[0]} | ${board[1]} | ${board[2]} "
-    echo "___|___|___"
-    echo "   |   |   "
-    echo " ${board[3]} | ${board[4]} | ${board[5]} "
-    echo "___|___|___"
-    echo "   |   |   "
-    echo " ${board[6]} | ${board[7]} | ${board[8]} "
-    echo "   |   |   "
-    echo "______________________________"
-}
+#./rando_opponent.sh <program1> <program2> [num_games]
+# Program 1 and 2 should both be algorithms for tic tac toe
+# this script will run both against a random tic tac toe bot a specified 
+# number of times and then will return how many nodes program 1 visted
+# and how many nodes program 2 visited (it will also say how many games
+# each program won)
+# Default for num_games is 100
 
+readonly PROG1="$1"
+readonly PROG2="$2"
+readonly NUM_GAMES="${3:-100}" #default is 100
+board=(0 1 2 3 4 5 6 7 8)
+program1_wins=0
+program2_wins=0
+program1_nodes_visited=0
+program2_nodes_visited=0
 free_space_count() {
     local count=0;
     for i in 0 1 2 3 4 5 6 7 8; do
@@ -55,13 +56,21 @@ check_win() {
 }    
 
 robot_choose_smart() {
-    local move=$(./minimax "${board[@]}" "$1")
+    local move=$("$1" "${board[@]}" 'O' 2> error.log) #$1 for which program to run
+    if [ "$PROG1" == "$1" ]; then
+        ((program1_nodes_visited+=$(cat error.log)))
+    else 
+        ((program2_nodes_visited+=$(cat error.log)))
+    fi
+    rm error.log
     board[${move}]=$1
-    print_array
     check_win $1
-    if [ $? -eq 0 ]; then
-        echo "computer wins"
-        exit 0
+    if [ $? -eq 0 ]; then #case the algo has won
+        if [ "$PROG1" == "$1" ]; then
+            ((program1_wins++))
+        else
+            ((program2_wins++))
+        fi
     fi
 }
 
@@ -98,37 +107,10 @@ board_full() {
     echo 1
 }
 
-read -p "Enter 0 for Hard mode (minimax), any other key easy (random mode): " mode
-echo -n "Tic-Tac-Toe: Enter 1 for you to go to first, anything else to go second: "
-read place
-if [[ ${place} =~ ^[0-9]+$ ]] && [ ${place} -eq 1 ]; then
-    echo "You go first (You are X)"
-    robo_char='O'
-    human_char='X'
-    print_array
-else
-    echo "I will go first (You are O)"
-    robo_char='X'
-    human_char='O'
-    if [ "${mode}" == "0" ]; then
-        robot_choose_smart ${robo_char}
-    else
-        robot_choose ${robo_char}
-    fi
-fi
-human_move() {
-    local move
-    read -p "Make a move: " move
-    while [[ ! ${move} =~ ^[0-8]$ ]] || [[ ! ${board[${move}]} =~ ^[0-8]$ ]]; do
-        echo "----------------------------"
-        echo "not a valid move"
-        print_array
-        read -p "Make a move: " move
-    done
-    return $move
-}
 while [ $(board_full) -eq 0 ]; do
-    human_move
+    #we should randomly choose who goes first, char doesn't matter
+    #so rando will be 'X' and smart will be 'O'
+
     board[$?]=${human_char}
     check_win $human_char
     if [ $? -eq 0 ]; then
