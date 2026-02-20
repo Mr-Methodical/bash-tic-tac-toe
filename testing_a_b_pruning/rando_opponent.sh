@@ -26,7 +26,7 @@ free_space_count() {
 }
 
 reset_board() {
-    board=(0 1 2 3 4 5 6 7 8 9)
+    board=(0 1 2 3 4 5 6 7 8)
 }
 
 check_win() {
@@ -67,8 +67,8 @@ robot_choose_smart() {
         ((program2_nodes_visited+=$(cat error.log)))
     fi
     rm error.log
-    board[${move}]=$1
-    check_win "$1"
+    board[${move}]='O'
+    check_win 'O'
     if [ $? -eq 0 ]; then #case the algo has won
         if [ "$PROG1" == "$1" ]; then
             ((program1_wins++))
@@ -86,7 +86,7 @@ robot_choose() {
     for i in {0..8}; do
         # case where the spot is a free space and we are on index we want
         if [[ ${board[$i]} =~ ^[0-8]$ ]] && [ $free_index -eq 0 ]; then
-            board[$i]=$1
+            board[$i]='X'
             break
         # not the right index, but it is free square:
         elif [[ ${board[$i]} =~ ^[0-8]$ ]]; then
@@ -107,28 +107,35 @@ board_full() {
     echo 1
 }
 
-while [ $(board_full) -eq 0 ]; do
-    #we should randomly choose who goes first, char doesn't matter
-    #so rando will be 'X' and smart will be 'O'
+play_match() {
+    reset_board
+    local turn=$(($RANDOM % 2))
+    if [ $turn -eq 0 ]; then
+        robot_choose
+    fi
+    local smart_won=1
+    while [ $smart_won -eq 1 ]; do
+        if [ $(board_full) -eq 1 ]; then
+            return
+        fi
+        robot_choose_smart $1
+        if [ $? -eq 0 ]; then
+            return
+        fi
+        if [ $(board_full) -eq 1 ]; then
+            return
+        fi
+        robot_choose
+    done
+}
 
-    board[$?]=${human_char}
-    check_win $human_char
-    if [ $? -eq 0 ]; then
-        print_array
-        echo "human wins"
-        exit 0
-    fi
-    if [ $(board_full) -ne 0 ]; then
-        break
-    fi
-    if [ "${mode}" == "0" ]; then
-        robot_choose_smart ${robo_char}
-    else
-        robot_choose ${robo_char}
-    fi
+for ((games=1; games<=NUM_GAMES; games++)); do
+    play_match "$PROG1"
+    play_match "$PROG2"
 done
-echo "$1 visited $program1_nodes_visited nodes and it won"\ 
+
+echo "$1 visited $program1_nodes_visited nodes and it won "\ 
 "$program1_wins games and tied $(($NUM_GAMES - $program1_wins))" 
-echo "$2 visited $program2_nodes_visited nodes and it won"\
+echo "$2 visited $program2_nodes_visited nodes and it won "\
 "$program2_wins games and tied $(($NUM_GAMES - $program2_wins))" 
 exit 0
