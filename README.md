@@ -7,7 +7,7 @@
 * Compared the number of moves to see the average difference the new algorithm made (wrote a bash shell script to test the difference in nodes each visited and the number of wins and ties each had) 
 * Put them both against the random version and test over a bunch of trials which one is faster (maybe 1000 games for each)
 * Here is image of difference in speed (I sped them up by around 97% less nodes needed to be touched):
-![image of efficiency (around 97%)](efficiency.png)
+<img src="efficiency.png" width="600" alt="image of efficiency (around 97%)">
 ## Task still to do:
 * Use RL and have the robot play either itself or minimax to learn and create a graph of the learning to show the progress
 ## Summary:
