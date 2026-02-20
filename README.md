@@ -15,6 +15,8 @@ By exploring the strongest paths first, the AI establishes a much higher `alpha`
 
 As shown in the benchmark below, this move-ordering strategy reduced the node count by an additional **57%** compared to standard Alpha-Beta pruning. Overall, this resulted in a staggering **98.2% total reduction** in computational load compared to the original brute-force Minimax algorithm—all while maintaining a flawless, unbeatable record.
 ![Move Ordering Efficiency](strategy_efficiency.png)
+* 100,000 tests (around 98.2 less nodes visited):
+![100000 games simulated](hundred_thousand.png)
 ## Task still to do:
 * Could make even more efficient by giving hire weight to better tic tac toe position(like corners and middle usually better)
 * Use RL and have the robot play either itself or minimax to learn and create a graph of the learning to show the progress
