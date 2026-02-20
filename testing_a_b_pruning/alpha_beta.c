@@ -3,6 +3,12 @@
 #include <stdbool.h>
 // This program calculates the next best move for a tic tac toe game
 
+// The idea is that by using tic tac toe strategy, we know the middle
+// and the corners are the best, so we should got for those first
+// and then this means we will go down usually the best move first
+// creating a higher alpha allowing us to cut branches quicker
+const int best_move_order[9] = {4, 0, 2, 6, 8, 1, 3, 5, 7};
+
 // check_win_char(board, c) determines if c has won the game
 // requires: board must be a valid array of size 9 [not asserted]
 //           c must be either 'X' or 'O'
@@ -71,15 +77,16 @@ int minimax(bool is_max, int depth, char board[], char human,
     if (is_max) {
         int best = -10;
         for (int i = 0; i < 9; ++i) {
-            if (board[i] != 'O' && board[i] != 'X') {
-                int temp = board[i];
-                board[i] = robot; // robot is the maximizer
+            int move = best_move_order[i];
+            if (board[move] != 'O' && board[move] != 'X') {
+                int temp = board[move];
+                board[move] = robot; // robot is the maximizer
                 int val = minimax(!is_max, depth + 1, board, 
                                   human, robot, nodes_visited, alpha, beta);
                 if (best < val) {
                     best = val; // the farther depth, the worse
                 }
-                board[i] = temp; // reset it (since we are on same board)
+                board[move] = temp; // reset it (since we are on same board)
                 // We are on maximizer so it will go for biggest value
                 // thus if we find a bigger value, we should go with that 
                 // for alpha
@@ -115,15 +122,16 @@ int minimax(bool is_max, int depth, char board[], char human,
     } else { // human's turn which is the minimizer
         int best = 10;
         for (int i = 0; i < 9; ++i) {
-            if (board[i] != 'O' && board[i] != 'X') {
-                int temp = board[i];
-                board[i] = human; // human is the minimizer
+            int move = best_move_order[i];
+            if (board[move] != 'O' && board[move] != 'X') {
+                int temp = board[move];
+                board[move] = human; // human is the minimizer
                 int val = minimax(!is_max, depth + 1, board, 
                                   human, robot, nodes_visited, alpha, beta);
                 if (best > val) {
                     best = val ; // the farther depth, the worse
                 }
-                board[i] = temp; // reset it (since we are on same board)
+                board[move] = temp; // reset it (since we are on same board)
                 if (best < beta) {
                     beta = best;
                 }
@@ -168,16 +176,17 @@ int main(int argc, char *argv[]){
     int alpha = -10;
     int beta = 10;
     for (int i = 0; i < 9; ++i) {
-        if (board[i] != 'X' && board[i] != 'O') {
-            int temp = board[i];
-            board[i] = robo_char;
+        int move = best_move_order[i];
+        if (board[move] != 'X' && board[move] != 'O') {
+            int temp = board[move];
+            board[move] = robo_char;
             int val = minimax(false, 1, board, human_char, robo_char, 
                               &nodes_visited, alpha, beta);
             if (max_score < val) {
                 max_score = val;
-                best_move = i;
+                best_move = move;
             }
-            board[i] = temp;
+            board[move] = temp;
             // we want to show the minimizer below the node that we are about
             // to each time that we actually already have an alpha, so that
             // if it is able to find a smaller value than we would of course 
