@@ -80,6 +80,35 @@ int minimax(bool is_max, int depth, char board[], char human,
                     best = val; // the farther depth, the worse
                 }
                 board[i] = temp; // reset it (since we are on same board)
+                // We are on maximizer so it will go for biggest value
+                // thus if we find a bigger value, we should go with that 
+                // for alpha
+                if (best > alpha) {
+                    alpha = best;
+                }
+                // beta is the node above it, if it is the case that 
+                // that beta is less than alpha so the minimizer above
+                // is already guaranteed a smaller value so we should break 
+                // out of the loop since the minimizer wouldn't go down
+                // any smaller branches if it was already guaranteed a smaller
+                // one on some other path, so no need to keep exploring 
+                // down this branch
+                // You can think of alpha is exploring the nodes below it
+                // if it found a value that is greater than the best value 
+                // beta which is above it can do, then obviously beta 
+                // would not want to go down that path because the maximizer
+                // would just go ahead and choose that value
+                // EX: Minimizer     B(5)
+                //                  /    \
+                //     Maximizer   5      A (where we currently are)
+                //                / \    / \
+                //               3   5  6   ?
+                // We immediately break, and just send up 6, since it doesn't
+                // matter what ? is, we are sending it back up to show
+                // the path is not appealing for the minimizer to go down
+                if (beta <= alpha) {
+                    break;
+                }
             }
         }
         return best;
@@ -95,6 +124,21 @@ int minimax(bool is_max, int depth, char board[], char human,
                     best = val ; // the farther depth, the worse
                 }
                 board[i] = temp; // reset it (since we are on same board)
+                if (best < beta) {
+                    beta = best;
+                }
+                // similar to the other case, if we are on the minimizer
+                // right now, we look up and see the node above us which
+                // is the maximizer already has alpha guaranteed
+                // if we find a beta down our branch that is less than alpha
+                // then of course if the maximizer chose us, we would just go
+                // with that value, so the maximizer would want the bigger
+                // guaranteed value, so all we have to do is to show that this
+                // path would be bad for it to go down, so we just return
+                // the value we are on.
+                if (beta <= alpha) {
+                    break;
+                }
             }
         }
         return best;
@@ -113,20 +157,34 @@ int main(int argc, char *argv[]){
         board[i] = *argv[i + 1];
     }
     int best_move = 0;
-    int max_score = -10;
-    const int alpha_lowest = -10;
-    const int beta_greatest = 10;
+    // initialized to -11 so the best_move can be a valid move
+    // as there is a case if alpha stayed -10 then best_move would just stay
+    // at zero if all positions returned -10, and then index 0 could be 
+    // invalid move.
+    int max_score = -11;
+    // starting alpha and beta off at their most extreme undesirable values
+    // so they will immediately want to become anything closer to their 
+    // respective max and min position
+    int alpha = -10;
+    int beta = 10;
     for (int i = 0; i < 9; ++i) {
         if (board[i] != 'X' && board[i] != 'O') {
             int temp = board[i];
             board[i] = robo_char;
             int val = minimax(false, 1, board, human_char, robo_char, 
-                              &nodes_visited, alpha_lowest, beta_greatest);
+                              &nodes_visited, alpha, beta);
             if (max_score < val) {
                 max_score = val;
                 best_move = i;
             }
             board[i] = temp;
+            // we want to show the minimizer below the node that we are about
+            // to each time that we actually already have an alpha, so that
+            // if it is able to find a smaller value than we would of course 
+            // not go down that (so we are essentially just giving more info)
+            if (max_score > alpha) {
+                alpha = max_score;
+            }
         }
     }
     printf("%d", best_move);
