@@ -15,6 +15,7 @@ program1_wins=0
 program2_wins=0
 program1_nodes_visited=0
 program2_nodes_visited=0
+
 free_space_count() {
     local count=0;
     for i in 0 1 2 3 4 5 6 7 8; do
@@ -77,6 +78,7 @@ robot_choose_smart() {
         fi
         return 0 #the robot won
     fi
+    return 1
 }
 
 robot_choose() {
@@ -134,7 +136,7 @@ for ((games=1; games<=NUM_GAMES; games++)); do
     play_match "$PROG2"
 done
 
-echo "$1 visited $program1_nodes_visited nodes and it won "\ 
+echo "$1 visited $program1_nodes_visited nodes and it won "\
 "$program1_wins games and tied $(($NUM_GAMES - $program1_wins))" 
 echo "$2 visited $program2_nodes_visited nodes and it won "\
 "$program2_wins games and tied $(($NUM_GAMES - $program2_wins))" 
