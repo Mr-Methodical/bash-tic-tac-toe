@@ -9,6 +9,7 @@
 * Here is image of difference in speed (I sped them up by around 97% less nodes needed to be touched):
 ![image of efficiency (around 97%)](efficiency.png)
 ## Task still to do:
+* Could make even more efficient by giving hire weight to better tic tac toe position(like corners and middle usually better)
 * Use RL and have the robot play either itself or minimax to learn and create a graph of the learning to show the progress
 ## Summary:
 ### Unbeatable Tic-Tac-Toe AI Engine | C, Bash, Git
