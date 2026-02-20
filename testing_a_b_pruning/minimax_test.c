@@ -32,7 +32,7 @@ bool check_win_char(char board[], char c) {
 // requires: board must be a valid array of size 9 [not asserted]
 //           human is 'X' and robot is 'O' or human is 'O' and robot is 'X'
 int check_win(char board[], char human, char robot) {
-    assert((human == 'X' & robot == 'O') || (human == 'O' && robot == 'X'));
+    assert((human == 'X' && robot == 'O') || (human == 'O' && robot == 'X'));
     if (check_win_char(board, human)) {
         return -10;
     } else if (check_win_char(board, robot)) {
@@ -53,7 +53,9 @@ bool moves_left(char board[]) {
     return false;
 }
 
-int minimax(bool is_max, int depth, char board[], char human, char robot) {
+int minimax(bool is_max, int depth, char board[], char human, 
+            char robot, int *nodes_visited) {
+    ++(*nodes_visited);
     int score = check_win(board, human, robot);
     // base case:
     if (score == 10) {
@@ -72,7 +74,8 @@ int minimax(bool is_max, int depth, char board[], char human, char robot) {
             if (board[i] != 'O' && board[i] != 'X') {
                 int temp = board[i];
                 board[i] = robot; // robot is the maximizer
-                int val = minimax(!is_max, depth + 1, board, human, robot);
+                int val = minimax(!is_max, depth + 1, board, 
+                                  human, robot, nodes_visited);
                 if (best < val) {
                     best = val; // the farther depth, the worse
                 }
@@ -86,7 +89,8 @@ int minimax(bool is_max, int depth, char board[], char human, char robot) {
             if (board[i] != 'O' && board[i] != 'X') {
                 int temp = board[i];
                 board[i] = human; // human is the minimizer
-                int val = minimax(!is_max, depth + 1, board, human, robot);
+                int val = minimax(!is_max, depth + 1, board, 
+                                  human, robot, nodes_visited);
                 if (best > val) {
                     best = val ; // the farther depth, the worse
                 }
@@ -101,6 +105,7 @@ int main(int argc, char *argv[]){
     // From our bash script we know we will be give a board that
     //   has at least one empty space
     assert(argc == 11);
+    int nodes_visited = 0;
     char robo_char = argv[10][0];
     char human_char = (robo_char == 'X') ? 'O' : 'X';
     char board[9];
@@ -113,7 +118,8 @@ int main(int argc, char *argv[]){
         if (board[i] != 'X' && board[i] != 'O') {
             int temp = board[i];
             board[i] = robo_char;
-            int val = minimax(false, 1, board, human_char, robo_char);
+            int val = minimax(false, 1, board, human_char,
+                              robo_char, &nodes_visited);
             if (max_score < val) {
                 max_score = val;
                 best_move = i;
@@ -122,6 +128,7 @@ int main(int argc, char *argv[]){
         }
     }
     printf("%d", best_move);
+    fprintf(stderr, "%d", nodes_visited);
     return 0;
 }
 
