@@ -55,7 +55,8 @@ To run your own automated simulations and compare the efficiency of the algorith
     gcc minimax_test.c -o minimax_test
     chmod a+x rando_opponent.sh
     
-Run the simulation (defaults to 100 trials)
+Run the simulation (defaults to 100 trials):
+
     ./rando_opponent.sh ./minimax_test ./alpha_beta 100
 
 ## Future Roadmap
