@@ -32,6 +32,7 @@ Alpha-Beta Pruning vs. Alpha-Beta with Move Ordering:
 
 ### Installation
 First, I used clang/gcc and linux for compiling (so anything similar to this would probably work)
+
 Clone the repository:
 
     git clone https://github.com/Mr-Methodical/bash-tic-tac-toe.git
