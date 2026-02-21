@@ -1,30 +1,63 @@
-## What I have done so far:
-* Created tic-tac-toe that you can run in the command line interface (CLI)
-* Implemented an algorithm where the robot's choice would be random using bash shell scripting
-* Watched https://www.youtube.com/watch?v=STjW3eH0Cik&t=2889s to learn about minimax algorithm, alpha-beta pruning, and progressive deepening.
-* Implement minimax
-* Use alpha beta pruning to get the time complexity down from O(b^d) to O(b^d/2) in the best case (and O(b^(3d/4)) in the average case)
-* Compared the number of moves to see the average difference the new algorithm made (wrote a bash shell script to test the difference in nodes each visited and the number of wins and ties each had) 
-* Put them both against the random version and test over a bunch of trials which one is faster (maybe 1000 games for each)
-* Here is image of difference in speed (I sped them up by around 97% less nodes needed to be touched):
-![image of efficiency (around 97%)](efficiency.png)
-### Phase 2: Strategic Move Ordering
-To maximize the efficiency of the Alpha-Beta pruning, I implemented a heuristic move-ordering array based on optimal Tic-Tac-Toe strategy. Instead of evaluating the board sequentially (top-left to bottom-right), the algorithm now prioritizes the most powerful squares first: the center, followed by the corners, and finally the edges.
+# Unbeatable Tic-Tac-Toe AI Engine
 
-By exploring the strongest paths first, the AI establishes a much higher `alpha` baseline almost immediately. This allows it to ruthlessly prune millions of weaker branches without needing to evaluate them deeply.
+An unbeatable Tic-Tac-Toe artificial intelligence built in C, featuring a command-line interface and an automated benchmarking suite written in Bash. 
 
-As shown in the benchmark below, this move-ordering strategy reduced the node count by an additional **57%** compared to standard Alpha-Beta pruning. Overall, this resulted in a staggering **98.2% total reduction** in computational load compared to the original brute-force Minimax algorithm—all while maintaining a flawless, unbeatable record.
-![Move Ordering Efficiency](strategy_efficiency.png)
-* 100,000 tests (around 98.2 less nodes visited):
-![100000 games simulated](hundred_thousand.png)
-## Task still to do:
-* Could make even more efficient by giving hire weight to better tic tac toe position(like corners and middle usually better)
-* Use RL and have the robot play either itself or minimax to learn and create a graph of the learning to show the progress
-## Summary:
-### Unbeatable Tic-Tac-Toe AI Engine | C, Bash, Git
+This project implements the Minimax algorithm to evaluate complete game trees, ensuring the AI forces a win or a draw in every possible scenario. To maximize efficiency, the search space is heavily optimized using Alpha-Beta Pruning and a Heuristic Move-Ordering strategy (which means it will go down most promising branches like the center and the corners first allowing it to prune branches quicker).
 
-- Engineered an unbeatable game AI in C, implementing the Minimax decision-making algorithm to evaluate complete game trees and force a win or draw in all scenarios.
+## Features & Optimizations
 
-- Optimized search efficiency by integrating Alpha-Beta pruning, reducing computational load by 95.8% (evaluating 12.7M nodes vs 303M) without degrading the bot's flawless win rate.
+* Command Line Interface: You can play against the AI directly in the terminal using a custom Bash script wrapper (it calls another C program for the logic). The bash script also has a random mode, so a person playing might want to switch to this after getting dominated by the minimax algorithm.
+* Minimax Decisions: the minimax function evaluates future moves and assigns a value to how good they are.
+* Alpha-Beta Pruning: Reduces the time complexity from O(b^d) to a best-case O(b^(d/2)), effectively cutting the computational load by over 95% without changing the bot's win rate (evaluating ~12.7M nodes down from ~303M).
+* Move Ordering: Evaluates the board based on optimal Tic-Tac-Toe strategy (Center -> Corners -> Edges) rather than sequentially. This helps with creating a high alpha baseline immediately, allowing the algorithm to prune millions of weaker branches.
+* Benchmarking: A Bash testing script utilizing Linux standard error streams (stderr) to execute thousands of head-to-head randomized simulations to help with testing my algos.
 
-- Designed an automated Bash benchmarking suite utilizing Linux standard error streams (stderr) to execute 1,000+ head-to-head randomized simulations and capture quantitative performance metrics.
+## Benchmarks
+
+By combining Alpha-Beta pruning and move ordering, the computational load was reduced by a 98.2% compared to the original brute-force Minimax algorithm.
+
+Standard Minimax vs. Alpha-Beta Pruning:
+(~97% reduction in visited nodes)
+![Efficiency Comparison](images/efficiency.png)
+
+Alpha-Beta Pruning vs. Alpha-Beta with Move Ordering:
+(An additional 57% reduction in visited nodes)
+![Move Ordering Efficiency](images/strategy_efficiency.png)
+
+100,000 Game Simulation:
+(98.2% better)
+![100,000 Games Simulated](images/hundred_thousand.png)
+
+## Getting Started
+
+### Installation
+First, I used clang/gcc and linux for compiling (so anything similar to this would probably work)
+Clone the repository:
+
+    git clone https://github.com/Mr-Methodical/bash-tic-tac-toe.git
+    cd bash-tic-tac-toe
+
+### How to Play
+To play a game against the AI (or the easy random bot), compile the C engine and run the Bash game script:
+
+    gcc minimax.c -o minimax
+    chmod a+x tictactoe.sh
+    ./tictactoe.sh
+
+Follow the prompts to choose your difficulty and decide who goes first.
+
+### Running the Benchmarks
+To run your own automated simulations and compare the efficiency of the algorithms, navigate to the testing directory:
+
+    cd testing_a_b_pruning
+    gcc alpha_beta.c -o alpha_beta
+    gcc minimax_test.c -o minimax_test
+    chmod a+x rando_opponent.sh
+    
+Run the simulation (defaults to 100 trials)
+    ./rando_opponent.sh ./minimax_test ./alpha_beta 100
+
+## Future Roadmap
+
+* **Smart Move Prioritization:** Right now, the AI always checks the center and corners first. It should be smarter and instead block an opponent who is one move away from winning (potentially adding other weighting as well (so basically have a game board that is dynamically weighted)).
+* **Machine Learning:** I want to build a second AI that starts out knowing nothing about Tic-Tac-Toe. It will learn through trial and error by playing thousands of games against the current engine (or itself or the random one). I want to then graph its win rate to show the AI getting smarter over time.

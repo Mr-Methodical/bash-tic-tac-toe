@@ -32,7 +32,7 @@ bool check_win_char(char board[], char c) {
 // requires: board must be a valid array of size 9 [not asserted]
 //           human is 'X' and robot is 'O' or human is 'O' and robot is 'X'
 int check_win(char board[], char human, char robot) {
-    assert((human == 'X' & robot == 'O') || (human == 'O' && robot == 'X'));
+    assert((human == 'X' && robot == 'O') || (human == 'O' && robot == 'X'));
     if (check_win_char(board, human)) {
         return -10;
     } else if (check_win_char(board, robot)) {
