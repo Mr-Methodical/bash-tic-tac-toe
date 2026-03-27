@@ -2,7 +2,7 @@
 
 An unbeatable Tic-Tac-Toe artificial intelligence built in C, featuring a command-line interface and an automated benchmarking suite written in Bash. 
 
-Wanting to first apply my bash knowledge, I created a bash tic-tac-toe script that someone could play, but it was just random, so I wanted to make it better. I watched https://www.youtube.com/watch?v=STjW3eH0Cik&t=2889s to learn about minimax alpha-beta pruning, and progressive deepening. I first implemented minimax and was curious how fast it was so I created another bash script to see how many nodes it was visiting. It turned out it was quite slow, so I also added in alpha-beta pruning and which ended up being **98.2%** faster. I also used heuristic move-ordering which means it will go down the most promising branches like the center and the corners first allowing it to prune branches quicker.
+Wanting to first apply my bash knowledge I had learned in CS136L, I created a bash tic-tac-toe script that someone could play, but it the robot's moves were chosen by random, so I wanted to make it better. I watched https://www.youtube.com/watch?v=STjW3eH0Cik&t=2889s to learn about minimax alpha-beta pruning, and progressive deepening. I first implemented minimax and was curious how fast it was so I created another bash script to see how many nodes it was visiting. It turned out it was quite slow, so I also added in alpha-beta pruning and which ended up being **98.2%** faster. I also used heuristic move-ordering which means it will go down the most promising branches like the center and the corners first allowing it to prune branches quicker.
 
 ## Features & Optimizations
 
